@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-struct CustomColor {
-    static let myColor = Color("0xffF4BC4D")
-    static let secondColor = UIColor.init(named: "0xffF4BC4D")
-    // Add more here...
-}
-
 struct ContentView: View {
     
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
@@ -67,12 +61,15 @@ struct ContentView: View {
                     }
                 Text(isDarkMode ? "Switch to LIGHT THEME" : "Switch to DARK THEME")
                     .foregroundColor(isDarkMode ? .white : .black)
+                    .font(.callout)
                 Spacer()
             }
-            .padding(.leading, 22)
+            .padding(.leading, 24)
             
+            Spacer()
+                   .frame(height: 30)
             
-            // Double ForEach loop to build pur num-pad
+            // Double ForEach loop to build our num-pad
             ForEach(buttonGrid, id: \.self) { row in
                 HStack(alignment: .top,spacing: 12) {
                     ForEach(row, id: \.self) { cell in
@@ -92,7 +89,7 @@ struct ContentView: View {
                                                 RoundedRectangle(cornerRadius: 70).stroke(.white, lineWidth: 0)
                                     )
                             })
-                        .background(isDarkMode ? Color(UIColor(Color("Selection Dark Color"))) : Color(UIColor(Color("Selection Color")))) // If you have this
+                        .background(isDarkMode ? Color(UIColor(Color("Selection Dark Color"))) : Color(UIColor(Color("Selection Light Color")))) // If you have this
                         .cornerRadius(42)
                         .shadow(color: isDarkMode ? .white.opacity(0.15) : .white.opacity(0.8), radius: 4, x: -1, y: -2)
                         
