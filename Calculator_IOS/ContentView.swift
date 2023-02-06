@@ -18,16 +18,16 @@ struct ContentView: View {
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     
     let buttonGrid = [
-        ["AC", "%", "x", "/"],
+        ["AC", "%", "x", "÷"],
         ["7", "8", "9", "-"],
         ["4", "5", "6", "+"],
         ["1", "2", "3", "⌫"],
         [".", "0", "="]
     ]
     
-    let operators = ["/", "+", "x", "%"]
+    let operators = ["÷", "+", "x", "%"]
     
-    let purpleColorHolder = ["/", "+", "-", "+", "⌫", "="]
+    let purpleColorHolder = ["÷", "+", "-", "+", "⌫", "="]
     
     @State var visibleWorkings = ""
     @State var visibleResults = "0"
@@ -61,6 +61,7 @@ struct ContentView: View {
             HStack() {
                 Toggle("", isOn: $isDarkMode).labelsHidden()
                     .tint(Color(UIColor(Color("Dark Purple"))))
+                    .shadow(color: .white.opacity(0.1), radius: 5, x: -2, y: -2)
                     .onChange(of: isDarkMode) { value in
                         isDarkMode.toggle()
                     }
@@ -84,22 +85,20 @@ struct ContentView: View {
                                     .font(.system(size: 24))
                                     .frame(width: self.buttonWidth(cell),
                                            height: self.buttonHeight(cell))
-                                    .foregroundColor(isDarkMode ? .white : .black)
+                                    .foregroundColor(self.buttonTextColor(cell))
                                     .background(self.buttonColor(cell))
                                     .overlay( cell == "=" ?
-                                              RoundedRectangle(cornerRadius: 42).stroke(.white, lineWidth: 3) :
-                                                RoundedRectangle(cornerRadius: 70).stroke(.white, lineWidth: 3)
+                                              RoundedRectangle(cornerRadius: 42).stroke(.white, lineWidth: 0) :
+                                                RoundedRectangle(cornerRadius: 70).stroke(.white, lineWidth: 0)
                                     )
-                                
-                                
                             })
                         .background(isDarkMode ? Color(UIColor(Color("Selection Dark Color"))) : Color(UIColor(Color("Selection Color")))) // If you have this
                         .cornerRadius(42)
-                     
+                        .shadow(color: isDarkMode ? .white.opacity(0.15) : .white.opacity(0.8), radius: 4, x: -1, y: -2)
                         
                     }
                 }
-                .shadow(color: .gray, radius: 1, x: 1, y: 2)
+                .shadow(color: isDarkMode ?  .black.opacity(0.5) : .black.opacity(0.1), radius: 6 , x: isDarkMode ? 3 : 1, y: isDarkMode ? 3 : 2)
                 .padding(.bottom, 3)
                 Spacer()
             }
@@ -119,19 +118,38 @@ struct ContentView: View {
     
     // function to get the different colours for button depending upon the theme
     func buttonColor(_ cell: String) -> Color {
-        if(cell == "AC"){
+        if(cell == "AC") {
             return Color(UIColor(Color("Yellow")))
-            
         }
-        if(cell == "%" || cell == "x"){
+        if(cell == "%" || cell == "x") {
             return isDarkMode ? Color(UIColor(Color("Dark Yellow"))) : Color(UIColor(Color("Light Yellow")))
-            
         }
-        if(purpleColorHolder.contains(cell)){
+        if(cell == "=") {
+            return isDarkMode ? Color(UIColor(Color("Dark Equal"))) : Color(UIColor(Color("Light Equal")))
+        }
+        if(purpleColorHolder.contains(cell)) {
             return isDarkMode ? Color(UIColor(Color("Dark Purple"))) : Color(UIColor(Color("Light Purple")))
         }
         return isDarkMode ? Color(UIColor(Color("Default Dark Button"))) : Color(UIColor(Color("Default Light Button")))
     }
+   
+    // function to get the different colours for button depending upon the theme
+    func buttonTextColor(_ cell: String) -> Color {
+        if(cell == "AC") {
+            return .white
+        }
+        if(cell == "%" || cell == "x") {
+            return Color(UIColor(Color("Yellow Text Color")))
+        }
+        if(cell == "=") {
+            return .white
+        }
+        if(purpleColorHolder.contains(cell)) {
+            return isDarkMode ? Color(UIColor(Color("Dark Purple Text Color"))) : Color(UIColor(Color("Light Purple Text Color")))
+        }
+        return isDarkMode ? Color(UIColor(Color("Default Dark Text Color"))) : Color(UIColor(Color("Default Light Text Color")))
+    }
+    
     
     // functions to get the width and height of the buttons in order to handle responsiveness of numpad on different screen-size devices
     func buttonWidth(_ cell: String) -> CGFloat {
@@ -157,7 +175,7 @@ struct ContentView: View {
             visibleResults = calculateResults()
         case "-":
             addMinus()
-        case "x", "/", "%", "+":
+        case "x", "÷", "%", "+":
             addOperator(cell)
         default:
             visibleWorkings += cell
