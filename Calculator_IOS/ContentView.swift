@@ -202,8 +202,9 @@ struct ContentView: View {
         if(validInput()) {
             var workings = visibleWorkings.replacingOccurrences(of: "%", with: "*0.01")
             workings = workings.replacingOccurrences(of: "x", with: "*")
+            workings = workings.replacingOccurrences(of: "÷", with: "/")
             let expression = NSExpression(format: workings)
-            let result = expression.expressionValue(with: nil, context: nil) as! Double
+            let result = expression.expressionValue(with: nil, context: nil) as? Double ?? 0
             return formatResult(val: result)
         }
         showAlert = true
